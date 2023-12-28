@@ -2,6 +2,35 @@ import { sql } from "@vercel/postgres";
 import { formatCurrency } from "./utils";
 import { unstable_noStore as noStore } from "next/cache";
 
+export async function fetchRevenue() {
+  noStore();
+  try {
+    const data = await sql`SELECT * FROM revenue`;
+
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+  }
+}
+
+export async function fetchLatestInvoices() {
+  noStore();
+  try {
+    const data = await sql`
+      SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
+      FROM invoices
+      JOIN customers ON invoices.customer_id = customers.id
+      ORDER BY invoices.date DESC
+      LIMIT 5`;
+
+    const latestInvoices = data.rows.map((invoice) => invoice);
+    return latestInvoices;
+  } catch (error) {
+    console.error("Database Error:", error);
+    // throw new Error("Failed to fetch the latest invoices.");
+  }
+}
+
 export async function fetchCardData() {
   noStore();
   try {
@@ -16,17 +45,18 @@ export async function fetchCardData() {
       customerCountPromise,
       invoiceStatusPromise,
     ]);
-    
+
+    console.log("-----" + data);
+
     const numberOfInvoices = Number(data[0].rows[0].count ?? "0");
-    console.log("----------" + numberOfInvoices);
     const numberOfCustomers = Number(data[1].rows[0].count ?? "0");
-    const totalPaidInovices = formatCurrency(data[2].rows[0].paid ?? "0");
+    const totalPaidInvoices = formatCurrency(data[2].rows[0].paid ?? "0");
     const totalPendingInvoices = formatCurrency(data[2].rows[0].pending ?? "0");
 
     return {
       numberOfInvoices,
       numberOfCustomers,
-      totalPaidInovices,
+      totalPaidInvoices,
       totalPendingInvoices,
     };
   } catch (error) {
