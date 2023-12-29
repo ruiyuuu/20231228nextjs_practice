@@ -4,6 +4,10 @@ import Form from "@/app/ui/invoices/edit-form";
 import { notFound } from "next/navigation";
 import { fetchInvoiceById, fetchCustomers } from "@/app/lib/data";
 
+export const metadata = {
+  title: "Edit"
+}
+
 export default async function page({ params }) {
   const id = params.id;
   const [invoice, customers] = await Promise.all([
