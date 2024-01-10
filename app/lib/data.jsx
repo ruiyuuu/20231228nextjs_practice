@@ -22,7 +22,6 @@ export async function fetchLatestInvoices() {
       JOIN customers ON invoices.customer_id = customers.id
       ORDER BY invoices.date DESC
       LIMIT 5`;
-      
 
     const latestInvoices = data.rows.map((invoice) => invoice);
     return latestInvoices;
@@ -41,7 +40,6 @@ export async function fetchCardData() {
     SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) AS "paid",
     SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) AS "pending" 
     FROM invoices`;
-
 
     const data = await Promise.all([
       invoiceCountPromise,
@@ -98,49 +96,50 @@ export async function fetchFilteredInvoices(query, currentPage) {
   }
 }
 
-export async function fetchInvoiceById(id){
-  noStore()
-  try{
-    const data = await sql`SELECT invoices.id, invoices.customer_id, invoices.amount, invoices.status
-    FROM invoices WHERE invoices.id = ${id}`
+export async function fetchInvoiceById(id) {
+  noStore();
+  try {
+    const data =
+      await sql`SELECT invoices.id, invoices.customer_id, invoices.amount, invoices.status
+    FROM invoices WHERE invoices.id = ${id}`;
 
-    const invoice = data.rows.map((invoice) => (
-      {
+    const invoice = data.rows.map((invoice) => ({
       ...invoice,
-      amount:invoice.amount/100
-    }))
+      amount: invoice.amount / 100,
+    }));
 
-    return invoice[0]
-  } catch (error){
-    console.error('Database Error:',error)
+    return invoice[0];
+  } catch (error) {
+    console.error("Database Error:", error);
   }
 }
 
-export async function fetchCustomers(){
-  try{
-    const data = await sql`SELECT id,name FROM customers ORDER BY name ASC`
+export async function fetchCustomers() {
+  try {
+    const data = await sql`SELECT id,name FROM customers ORDER BY name ASC`;
 
-    const customers = data.rows
-    return customers
-  } catch(err){
-    console.error('Database Error:',err)
+    const customers = data.rows;
+    return customers;
+  } catch (err) {
+    console.error("Database Error:", err);
   }
 }
 
-export async function fetchInvoicesPages(query){
-  noStore()
-  try{
-    const count = await sql`SELECT COUNT(*) FROM invoices JOIN customers ON invoices.customer_id = customers.id WHERE customers.name ILIKE ${`%${query}%`} OR
+export async function fetchInvoicesPages(query) {
+  noStore();
+  try {
+    const count =
+      await sql`SELECT COUNT(*) FROM invoices JOIN customers ON invoices.customer_id = customers.id WHERE customers.name ILIKE ${`%${query}%`} OR
     customers.email ILIKE ${`%${query}%`} OR
     invoices.amount::text ILIKE ${`%${query}%`} OR
     invoices.date::text ILIKE ${`%${query}%`} OR
-    invoices.status ILIKE ${`%${query}%`}`
+    invoices.status ILIKE ${`%${query}%`}`;
 
-    const totalPages = Math.ceil(Number(count.rows[0].count)/ITEMS_PER_PAGE)
+    const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
 
-    return totalPages
-  } catch(err) {
-    console.error('Database Error:',err)
+    return totalPages;
+  } catch (err) {
+    console.error("Database Error:", err);
   }
 }
 
@@ -176,11 +175,11 @@ export async function fetchFilteredCustomers(query) {
   }
 }
 
-export async function getUser(){
-  try{
-    const user=await sql`SELECT * FROM users WHERE email=${email}`
-    return user.rows[0]
-  } catch(err){
+export async function getUser() {
+  try {
+    const user = await sql`SELECT * FROM users WHERE email=${email}`;
+    return user.rows[0];
+  } catch (err) {
     console.error("Database Error", err);
   }
 }

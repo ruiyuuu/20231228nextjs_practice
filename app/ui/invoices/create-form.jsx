@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { createInvoice } from "@/app/lib/actions";
 import { useFormState } from "react-dom";
@@ -10,10 +10,17 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Button } from "@/app/ui/button";
+import { useState } from "react";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export default function Form({ customers }) {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useFormState(createInvoice, initialState);
+  const [loading, setLoading] = useState(false);
+  const submit = () => {
+    setLoading(true);
+  };
+
   return (
     <form action={dispatch}>
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -66,6 +73,7 @@ export default function Form({ customers }) {
                 placeholder="Enter USD amount"
                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby="amount-error"
+                onKeyDown={(e) => e.key === "e" && e.preventDefault()}
               />
               <CurrencyDollarIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -141,7 +149,13 @@ export default function Form({ customers }) {
         >
           Cancel
         </Link>
-        <Button type="submit">Create Invoice</Button>
+        <Button type="submit" aria-disabled={loading} onClick={submit}>
+          {loading ? (
+            <BeatLoader color={"#FFFFFF"} loading={loading} size={10} />
+          ) : (
+            "Create Invoice"
+          )}
+        </Button>
       </div>
     </form>
   );

@@ -1,6 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { deleteInvoice } from "@/app/lib/actions";
+import { useState } from "react";
+import BeatLoader from "react-spinners/BeatLoader";
 
 export function CreateInvoice() {
   return (
@@ -17,12 +21,21 @@ export function CreateInvoice() {
 }
 
 export function UpdateInvoice({ id }) {
+  const [loading, setLoading] = useState(false);
+  const click = () => {
+    setLoading(true);
+  };
   return (
     <Link
       href={`/dashboard/invoices/${id}/edit`}
       className="rounded-md border p-2 hover:bg-gray-100"
+      onClick={click}
     >
-      <PencilIcon className="w-5" />
+      {loading ? (
+        <BeatLoader color={"#FFFFFF"} loading={loading} size={10} />
+      ) : (
+        <PencilIcon className="w-5" />
+      )}
     </Link>
   );
 }

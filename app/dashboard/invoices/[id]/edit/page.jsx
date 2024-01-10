@@ -5,8 +5,8 @@ import { notFound } from "next/navigation";
 import { fetchInvoiceById, fetchCustomers } from "@/app/lib/data";
 
 export const metadata = {
-  title: "Edit"
-}
+  title: "Edit",
+};
 
 export default async function page({ params }) {
   const id = params.id;

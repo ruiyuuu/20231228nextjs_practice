@@ -1,13 +1,13 @@
-import React from 'react'
+import React from "react";
 import { fetchFilteredInvoices } from "@/app/lib/data";
 import Image from "next/image";
 import InvoiceStatus from "@/app/ui/invoices/status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { UpdateInvoice, DeleteInvoice } from "@/app/ui/invoices/buttons";
 
-
-export default async function table({query, currentPage}) {
+export default async function table({ query, currentPage }) {
   const invoices = await fetchFilteredInvoices(query, currentPage);
+
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
