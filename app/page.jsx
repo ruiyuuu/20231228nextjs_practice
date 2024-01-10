@@ -8,7 +8,7 @@ import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import BeatLoader from "react-spinners/BeatLoader";
 
-export default function page() {
+export default function Page() {
   const [loading, setLoading] = useState(false);
   return (
     <main className="flex min-h-screen flex-col p-6">
